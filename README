@@ -1,0 +1,6 @@
+Very simple physics engine in JavaScript
+========================================
+
+The core component is the *engine* which contains any number of *systems* which
+handle anything from rendering to moving objects and resolving physical
+constraints.
