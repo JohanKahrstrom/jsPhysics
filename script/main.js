@@ -83,9 +83,6 @@ var PlayingAround = function() {
 			clearScreen(ctx);
 		}
 
-		this.pureDraw = function(ctx) {
-		}
-
 		function clearScreen(ctx) {
 			ctx.save();
 			ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -118,30 +115,11 @@ var PlayingAround = function() {
 			ctx.stroke();
 			ctx.restore();
 		}
-
-		this.pureDraw = function() {
-			ctx.save();
-			if (this.colliding) {
-				ctx.strokeStyle = '#F99';
-			} else {
-				ctx.strokeStyle = '#555';
-			}
-			ctx.lineWidth = 0.3;
-			ctx.beginPath();
-			ctx.moveTo(this.start.purePosition.x, this.start.purePosition.y);
-			ctx.lineTo(this.end.purePosition.x, this.end.purePosition.y);
-			ctx.stroke();
-			ctx.restore();
-		}
 	}
 
 	var magnifier = new Object();
 	magnifier.center = new Vector(0, 0);
 	magnifier.scale = 1.0;
-
-	var zoomMagnifier = new Object();
-	zoomMagnifier.center = new Vector(0, 0);
-	zoomMagnifier.scale = 10.0;
 
 	function setUpEngine(engine, v) {
 		/* Set up systems */
@@ -152,9 +130,6 @@ var PlayingAround = function() {
 		var dampener = new StiffDamper();
 		var screenClearer = new ObjectRenderer(ctx, magnifier);
 		var renderer = new ObjectRenderer(ctx, magnifier);
-		var zoomedRenderer = new ObjectRenderer(ctx, zoomMagnifier);
-		var pureRenderer = new PureObjectRenderer(ctx, magnifier);
-		var pureZoomedRenderer = new PureObjectRenderer(ctx, zoomMagnifier);
 
 		engine.addSystem(screenClearer);
 		engine.addSystem(accelerator);
@@ -162,9 +137,6 @@ var PlayingAround = function() {
 		engine.addSystem(dampener);
 		engine.addSystem(collision);
 		engine.addSystem(renderer);
-		engine.addSystem(zoomedRenderer);
-		engine.addSystem(pureRenderer);
-		engine.addSystem(pureZoomedRenderer);
 
 		/*
 		 * Set up elements.
@@ -179,7 +151,7 @@ var PlayingAround = function() {
 		var offset = new Vector(140, 0);
 		var n = 4;
 		for (var i = 0; i < n; ++i) {
-			addElement(accelerator, mover, renderer, zoomedRenderer, pureRenderer, pureZoomedRenderer, dampener, collision, 4 + i, 50, 0.1*v, center.add(offset));
+			addElement(accelerator, mover, renderer, dampener, collision, 4 + i, 50, 0.1*v, center.add(offset));
 			offset = offset.rotate(2*3.14159265358979/n);
 		}
 
@@ -212,13 +184,9 @@ var PlayingAround = function() {
 		renderer.addObject(lines[1]);
 		renderer.addObject(lines[2]);
 		renderer.addObject(lines[3]);
-		zoomedRenderer.addObject(lines[0]);
-		zoomedRenderer.addObject(lines[1]);
-		zoomedRenderer.addObject(lines[2]);
-		zoomedRenderer.addObject(lines[3]);
 	}
 
-	function addElement(accelerator, mover, renderer, zoomedRenderer, pureRenderer, pureZoomedRenderer, dampener, collision, n, r, v, center) {
+	function addElement(accelerator, mover, renderer, dampener, collision, n, r, v, center) {
 		if (n < 3) {
 			return;
 		}
@@ -259,9 +227,6 @@ var PlayingAround = function() {
 		for (var i = 0; i < n; ++i) {
 			collision.addLine(lines[i]);
 			renderer.addObject(lines[i]);
-			zoomedRenderer.addObject(lines[i]);
-			pureRenderer.addObject(lines[i]);
-			pureZoomedRenderer.addObject(lines[i]);
 		}
 	}
 
@@ -270,7 +235,6 @@ var PlayingAround = function() {
 
 	   canvas = document.getElementById('canvas');
 
-	   canvas.addEventListener("mousemove",move, false);
 	   if (canvas.getContext) {
 	      ctx = canvas.getContext('2d');
 
@@ -281,10 +245,6 @@ var PlayingAround = function() {
 	   } else {
 	      console.log("Could not find canvas context.");
 	   }
-	}
-
-	function move(e) {
-		zoomMagnifier.center = getCursorInWorld(getCursorInCanvas(e));
 	}
 
 	function getCursorInCanvas(e) {

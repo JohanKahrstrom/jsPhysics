@@ -231,24 +231,3 @@ function ObjectRenderer(c, m) {
       ctx.restore();
    }
 }
-
-function PureObjectRenderer(c, m) {
-   var objects = new Array();
-   var ctx = c;
-   var magnifier = m;
-
-   this.addObject = function(object) {
-      objects.push(object);
-   }
-
-   this.action = function(step) {
-      ctx.save();
-      ctx.translate(m.center.x, m.center.y);
-      ctx.scale(m.scale, m.scale);
-      ctx.translate(-m.center.x, -m.center.y);
-      for (var i = 0; i < objects.length; ++i) {
-         objects[i].pureDraw(ctx);
-      }
-      ctx.restore();
-   }
-}
