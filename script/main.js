@@ -79,14 +79,14 @@ var PlayingAround = function() {
 	 * Simple object used only to clear the screen.
 	 */
 	function ScreenClearer() {
-		this.draw = function() {
-			clearScreen();
+		this.draw = function(ctx) {
+			clearScreen(ctx);
 		}
 
-		this.pureDraw = function() {
+		this.pureDraw = function(ctx) {
 		}
 
-		function clearScreen() {
+		function clearScreen(ctx) {
 			ctx.save();
 			ctx.setTransform(1, 0, 0, 1, 0, 0);
 			ctx.clearRect(0, 0, canvas.width, canvas.height);

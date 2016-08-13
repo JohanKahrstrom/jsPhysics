@@ -134,9 +134,7 @@ function LinearCollision() {
       collision = false;
       for (var i = 0; i < objects.length; ++i) {
          for (var j = 0; j < lines.length; ++j) {
-            if (checkObject(objects[i], lines[j])) {
-               collision = true;
-            }
+            collision |= checkObject(objects[i], lines[j]);
          }
       }
       return collision;
@@ -228,7 +226,7 @@ function ObjectRenderer(c, m) {
       ctx.scale(m.scale, m.scale);
       ctx.translate(-m.center.x, -m.center.y);
       for (var i = 0; i < objects.length; ++i) {
-         objects[i].draw();
+         objects[i].draw(ctx);
       }
       ctx.restore();
    }
@@ -249,7 +247,7 @@ function PureObjectRenderer(c, m) {
       ctx.scale(m.scale, m.scale);
       ctx.translate(-m.center.x, -m.center.y);
       for (var i = 0; i < objects.length; ++i) {
-         objects[i].pureDraw();
+         objects[i].pureDraw(ctx);
       }
       ctx.restore();
    }
