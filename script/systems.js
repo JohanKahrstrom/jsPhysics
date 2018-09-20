@@ -10,10 +10,7 @@ function GravityAccelerator() {
       objects.push(object);
    }
 
-   this.action = function(step) {
-      if (!step) {
-         return
-      }
+   this.action = function() {
       for (var i = 0; i < objects.length; ++i) {
          for (var j = 0; j < i; ++j) {
             acceleratePair(objects[i], objects[j]);
@@ -43,19 +40,17 @@ function GravityAccelerator() {
  *
  */
 function EarthGravityAccelerator() {
-   var objects = new Array();
+   var objects = {};
 
    this.addObject = function(object) {
-      objects.push(object);
+      if (typeof object.id === "undefined") throw "Adding object with no id to EarthGravityAccelerator.";
+      objects[object.id] = object;
+      console.log("Added object " + object.id + " to EarthGravityAccelerator.");
    }
 
-   this.action = function(step) {
-      if (!step) {
-         return
-      }
-
-      for (var i = 0; i < objects.length; ++i) {
-         accelerate(objects[i]);
+   this.action = function() {
+      for (id in objects) {
+         accelerate(objects[id]);
       }
    }
 
@@ -75,10 +70,7 @@ function StiffDamper() {
       pairs.push(pair);
    }
 
-   this.action = function(step) {
-      if (!step) {
-         return
-      }
+   this.action = function() {
       var error = 1;
       while (error > 0.5 * tolerance) {
          error = 0;
@@ -113,11 +105,7 @@ function LinearCollision() {
       objects.push(e);
    }
 
-   this.action = function(step) {
-      if (!step) {
-         return
-      }
-
+   this.action = function() {
       for (var j = 0; j < lines.length; ++j) {
          lines[j].colliding = false;
       }
@@ -197,11 +185,7 @@ function Mover() {
       objects.push(object);
    }
 
-   this.action = function(step) {
-      if (!step) {
-         return
-      }
-
+   this.action = function() {
       for (var i = 0; i < objects.length; ++i) {
          objects[i].move();
       }
@@ -220,7 +204,7 @@ function ObjectRenderer(c, m) {
       objects.push(object);
    }
 
-   this.action = function(step) {
+   this.action = function() {
       ctx.save();
       ctx.translate(m.center.x, m.center.y);
       ctx.scale(m.scale, m.scale);

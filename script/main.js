@@ -96,9 +96,9 @@ var PlayingAround = function() {
 	var run = false;
 	var first = true;
 
-	function Line(l) {
-		this.start = l[0];
-		this.end = l[1];
+	function Line(start, end) {
+		this.start = start;
+		this.end = end;
 		this.colliding = false;
 
 		this.draw = function() {
@@ -144,6 +144,8 @@ var PlayingAround = function() {
 		 */
 
 		// Screen clearer, only rendered.
+		var sco = new ScreenClearer();
+		engine.addObject(sco);
 		screenClearer.addObject(new ScreenClearer());
 		// openderer.addObject(new ScreenClearer());
 
@@ -151,7 +153,7 @@ var PlayingAround = function() {
 		var offset = new Vector(140, 0);
 		var n = 4;
 		for (var i = 0; i < n; ++i) {
-			addElement(accelerator, mover, renderer, dampener, collision, 4 + i, 50, 0.1*v, center.add(offset));
+			addElement(engine, accelerator, mover, renderer, dampener, collision, 4 + i, 50, 0.1*v, center.add(offset));
 			offset = offset.rotate(2*3.14159265358979/n);
 		}
 
@@ -170,10 +172,10 @@ var PlayingAround = function() {
 		rawLines[3].push({position: new Vector(-200, -200), oldPosition: new Vector(-200, -200)});
 
 		var lines = new Array();
-		lines.push(new Line(rawLines[0]));
-		lines.push(new Line(rawLines[1]));
-		lines.push(new Line(rawLines[2]));
-		lines.push(new Line(rawLines[3]));
+		lines.push(new Line(rawLines[0][0], rawLines[0][1]));
+		lines.push(new Line(rawLines[1][0], rawLines[1][1]));
+		lines.push(new Line(rawLines[2][0], rawLines[2][1]));
+		lines.push(new Line(rawLines[3][0], rawLines[3][1]));
 
 		collision.addLine(lines[0]);
 		collision.addLine(lines[1]);
@@ -186,7 +188,7 @@ var PlayingAround = function() {
 		renderer.addObject(lines[3]);
 	}
 
-	function addElement(accelerator, mover, renderer, dampener, collision, n, r, v, center) {
+	function addElement(engine, accelerator, mover, renderer, dampener, collision, n, r, v, center) {
 		if (n < 3) {
 			return;
 		}
@@ -197,6 +199,7 @@ var PlayingAround = function() {
 			elements[i] = { position: center.add(offset), acceleration: new Vector(0, 0), radius: 5 , m: 1, im: 1};
 			elements[i].oldPosition = getOldPositionFromVelocity(elements[i], new Vector(v, 0));
 			elements[i].mass = 1
+			engine.addObject(elements[i]);
 			offset = offset.rotate(2 * 3.14159265358979 / n);
 
 			accelerator.addObject(elements[i]);
@@ -221,7 +224,7 @@ var PlayingAround = function() {
 
 		var lines = new Array();
 		for (var i = 0; i < n; ++i) {
-			lines.push(new Line(rawLines[i]));
+			lines.push(new Line(rawLines[i][0], rawLines[i][1]));
 		}
 
 		for (var i = 0; i < n; ++i) {
